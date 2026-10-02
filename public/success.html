@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Status | Otansa Digital Creations</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+  <main class="page">
+    <section class="payment-card">
+
+      <img
+        src="/logo.jpg"
+        alt="Otansa Digital Creations"
+        class="logo"
+      >
+
+      <h1 id="title">Checking Payment...</h1>
+
+      <p id="status" class="intro">
+        Please wait while we confirm your payment.
+      </p>
+
+      <a href="/" id="backButton" style="
+        display:block;
+        text-align:center;
+        margin-top:25px;
+        padding:14px;
+        border-radius:9px;
+        background:#f58220;
+        color:white;
+        text-decoration:none;
+        font-weight:700;
+      ">
+        BACK TO PAYMENT
+      </a>
+
+    </section>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const reference = params.get("reference");
+
+    const title = document.getElementById("title");
+    const status = document.getElementById("status");
+
+    if (!reference) {
+      title.textContent = "Payment Received";
+      status.textContent =
+        "Thank you. Please check your email or contact Otansa Digital Creations if you need confirmation.";
+    } else {
+      fetch(`/api/verify/${encodeURIComponent(reference)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === "success") {
+            title.textContent = "Payment Successful!";
+            status.textContent =
+              `Thank you. Your payment of ${data.currency} ${Number(data.amount).toFixed(2)} was successful.`;
+          } else {
+            title.textContent = "Payment Pending";
+            status.textContent =
+              "Your payment is being processed. Please contact Otansa Digital Creations if you need assistance.";
+          }
+        })
+        .catch(() => {
+          title.textContent = "Payment Status";
+          status.textContent =
+            "We could not confirm the payment right now. Please contact Otansa Digital Creations for confirmation.";
+        });
+    }
+  </script>
+
+</body>
+</html>
