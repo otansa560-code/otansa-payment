@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Otansa Digital Creations</title>
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    .admin-card {
+      max-width: 900px;
+    }
+
+    .total-box {
+      background: #172033;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 25px 0;
+    }
+
+    .total-box small {
+      display: block;
+      opacity: 0.75;
+      margin-bottom: 6px;
+    }
+
+    .total-box strong {
+      font-size: 30px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eaecf0;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f9fafb;
+      font-size: 14px;
+    }
+
+    .status-success {
+      color: #067647;
+      font-weight: 700;
+    }
+
+    .status-pending {
+      color: #b54708;
+      font-weight: 700;
+    }
+
+    .refresh {
+      margin-top: 15px;
+      width: auto;
+      padding: 10px 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+    <section class="payment-card admin-card">
+
+      <img
+        src="/logo.jpg"
+        alt="Otansa Digital Creations"
+        class="logo"
+      >
+
+      <h1>Payment Dashboard</h1>
+
+      <p class="intro">
+        Otansa Digital Creations
+      </p>
+
+      <div class="total-box">
+        <small>Total Received</small>
+        <strong id="total">GHS 0.00</strong>
+      </div>
+
+      <button class="refresh" onclick="loadPayments()">
+        REFRESH
+      </button>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Service</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+
+          <tbody id="payments">
+            <tr>
+              <td colspan="5">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    async function loadPayments() {
+      const tbody = document.getElementById("payments");
+      const total = document.getElementById("total");
+
+      tbody.innerHTML =
+        '<tr><td colspan="5">Loading...</td></tr>';
+
+      try {
+        const response = await fetch("/api/admin/payments");
+
+        if (!response.ok) {
+          throw new Error("Unable to load payments.");
+        }
+
+        const data = await response.json();
+
+        total.textContent =
+          `GHS ${Number(data.totalReceived).toFixed(2)}`;
+
+        if (!data.payments.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="5">No payments yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.payments.map(payment => {
+          const statusClass =
+            payment.status === "success"
+              ? "status-success"
+              : "status-pending";
+
+          return `
+            <tr>
+              <td>${escapeHtml(payment.name)}</td>
+              <td>${escapeHtml(payment.service)}</td>
+              <td>GHS ${Number(payment.amount).toFixed(2)}</td>
+              <td class="${statusClass}">
+                ${escapeHtml(payment.status)}
+              </td>
+              <td>
+                ${new Date(payment.created_at).toLocaleString()}
+              </td>
+            </tr>
+          `;
+        }).join("");
+
+      } catch (error) {
+        tbody.innerHTML =
+          '<tr><td colspan="5">Unable to load payments.</td></tr>';
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    loadPayments();
+  </script>
+
+</body>
+</html>
