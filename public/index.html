@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make a Payment | Otansa Digital Creations</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+  <main class="page">
+    <section class="payment-card">
+
+      <img
+        src="/logo.jpg"
+        alt="Otansa Digital Creations"
+        class="logo"
+      >
+
+      <h1>Make a Payment</h1>
+
+      <p class="intro">
+        Pay securely for your design or digital service.
+      </p>
+
+      <form id="paymentForm">
+
+        <label for="name">Full Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Your full name"
+          required
+        >
+
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="you@example.com"
+          required
+        >
+
+        <label for="phone">Phone Number</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="024 000 0000"
+        >
+
+        <label for="service">Payment For</label>
+        <input
+          type="text"
+          id="service"
+          name="service"
+          placeholder="e.g. Flyer Design"
+          required
+        >
+
+        <label for="amount">Amount (GHS)</label>
+        <input
+          type="number"
+          id="amount"
+          name="amount"
+          placeholder="0.00"
+          min="1"
+          step="0.01"
+          required
+        >
+
+        <button type="submit" id="payButton">
+          PAY NOW
+        </button>
+
+        <p id="message"></p>
+
+      </form>
+
+      <p class="secure">
+        🔒 Secure payment powered by Paystack
+      </p>
+
+      <p class="copyright">
+        © Otansa Digital Creations
+      </p>
+
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
